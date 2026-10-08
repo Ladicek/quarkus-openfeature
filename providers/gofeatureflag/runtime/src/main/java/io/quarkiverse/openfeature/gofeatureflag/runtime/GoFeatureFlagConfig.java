@@ -70,6 +70,14 @@ public interface GoFeatureFlagConfig {
         Optional<String> tlsConfigurationName();
 
         /**
+         * Idle timeout for the SSE stream. If no data is received within this period,
+         * the stream is closed and a reconnect is attempted. This is the only thing that
+         * detects a connection which was silently dropped somewhere along the way.
+         */
+        @WithDefault("10m")
+        Duration streamDeadline();
+
+        /**
          * Grace period before transitioning from STALE to ERROR
          * after a connection loss. During this period, the provider continues
          * serving cached flag values while attempting to reconnect.
