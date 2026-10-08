@@ -159,6 +159,17 @@ The grace period is configurable:
 quarkus.openfeature.gofeatureflag.grace-period=10m
 ----
 
+A connection that is dropped silently somewhere in transit sends no FIN, so the provider cannot notice it from the SSE stream alone.
+The stream deadline closes a stream that has not delivered any data for a while, which triggers a reconnect:
+
+[source,properties]
+----
+quarkus.openfeature.gofeatureflag.stream-deadline=5m
+----
+
+The configuration fetch times out after 10 seconds.
+That is not configurable; unlike the stream deadline, it only has to accommodate a server that is reachable but busy.
+
 [[configuration-reference]]
 == Configuration Reference
 
