@@ -224,8 +224,10 @@ public class GoFeatureFlagSyncClient {
     }
 
     private HttpClient createHttpClient() {
-        // a connection that stops delivering data without a FIN is invisible to the
-        // response handlers, so the stream deadline has to be enforced at the socket
+        // request timeout is cancelled once response headers arrive, so if the connection
+        // delivers the headers but stops delivering the body in the middle, without
+        // a FIN packet, it wouldn't be guarded by the request timeout and the response
+        // handler wouldn't be called either; we have to enforce the timeout at the socket
         HttpClientOptions options = new HttpClientOptions()
                 .setReadIdleTimeout((int) config.streamDeadline().toMillis())
                 .setIdleTimeoutUnit(TimeUnit.MILLISECONDS);

@@ -48,9 +48,10 @@ public class UnleashSyncClient {
 
     void start(Listener listener) {
         context.runOnContext(v -> {
-            // the request timeout stops guarding once the response headers arrive, and a
-            // connection that stops delivering the body without a FIN is invisible to the
-            // response handlers, so the same limit is enforced at the socket as well
+            // request timeout is cancelled once response headers arrive, so if the connection
+            // delivers the headers but stops delivering the body in the middle, without
+            // a FIN packet, it wouldn't be guarded by the request timeout and the response
+            // handler wouldn't be called either; we have to enforce the timeout at the socket
             HttpClientOptions options = new HttpClientOptions()
                     .setReadIdleTimeout((int) config.requestTimeout().toMillis())
                     .setIdleTimeoutUnit(TimeUnit.MILLISECONDS);
